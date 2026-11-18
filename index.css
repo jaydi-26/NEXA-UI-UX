@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #eff6ff;
+}
+::-webkit-scrollbar-thumb {
+  background: #bfdbfe;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #93c5fd;
+}
+
+/* Leaflet map styling overrides */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem;
+  background-color: #eff6ff;
+}
+.leaflet-popup-content-wrapper {
+  background: #ffffff;
+  color: #1e3a8a;
+  border-radius: 0.75rem;
+  border: 1px solid #bfdbfe;
+  box-shadow: 0 10px 25px -5px rgba(30, 64, 175, 0.2);
+}
+.leaflet-popup-tip {
+  background: #ffffff;
+}
+
+/* Pulsing radar effect for high priority flood areas */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 14px rgba(239, 68, 68, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.radar-pulse {
+  animation: pulse-ring 2s infinite cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+body {
+  background: #ffffff;
+  color: #1e3a8a;
+}
+
+/* ===== Latar hidup: ombak bergerak + animasi halus ===== */
+.wave-layer {
+  display: block;
+  height: 100%;
+  width: 200%;
+  will-change: transform;
+}
+@keyframes wave-shift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes wave-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(14px); }
+}
+.wave-a { animation: wave-shift 38s linear infinite; }
+.wave-b { animation: wave-shift 26s linear infinite reverse; }
+.wave-c { animation: wave-shift 18s linear infinite; }
+.wave-a, .wave-b, .wave-c { transform-origin: center; }
+
+@keyframes blob-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(30px, 24px) scale(1.08); }
+}
+.blob { animation: blob-float 14s ease-in-out infinite; }
+.blob-slow { animation: blob-float 22s ease-in-out infinite reverse; }
+
+/* Muncul halus saat halaman dibuka */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up .6s cubic-bezier(.2,.7,.2,1) both; }
+.fade-up-1 { animation-delay: .05s; }
+.fade-up-2 { animation-delay: .15s; }
+.fade-up-3 { animation-delay: .25s; }
+
+/* Kartu terangkat sedikit saat disentuh kursor */
+.lift { transition: transform .25s ease, box-shadow .25s ease; }
+.lift:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -12px rgba(37, 99, 235, .25); }
+
+/* Denyut lembut untuk tombol Lapor Bahaya */
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 10px 24px -6px rgba(37, 99, 235, .55), 0 0 0 0 rgba(59, 130, 246, .45); }
+  50%      { box-shadow: 0 12px 30px -6px rgba(37, 99, 235, .7), 0 0 0 10px rgba(59, 130, 246, 0); }
+}
+.cta-glow { animation: cta-glow 2.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-a, .wave-b, .wave-c, .blob, .blob-slow, .fade-up, .cta-glow { animation: none !important; }
+  .lift:hover { transform: none; }
+}
+
+/* Chat NEXA Bot muncul dari pojok kanan bawah */
+@keyframes bot-pop {
+  from { opacity: 0; transform: translateY(20px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.bot-pop { animation: bot-pop .28s cubic-bezier(.2,.8,.2,1) both; transform-origin: bottom right; }
+@media (prefers-reduced-motion: reduce) { .bot-pop { animation: none; } }
+
+/* Lonceng bergoyang pelan saat ada notifikasi baru */
+@keyframes bell-ring {
+  0%, 60%, 100% { transform: rotate(0); }
+  66% { transform: rotate(14deg); } 72% { transform: rotate(-12deg); }
+  78% { transform: rotate(8deg); }  84% { transform: rotate(-6deg); }
+}
+.bell-ring { animation: bell-ring 3.5s ease-in-out infinite; transform-origin: top center; }
+@media (prefers-reduced-motion: reduce) { .bell-ring { animation: none; } }
+
+/* ===== Bubble (kartu kaca interaktif) ===== */
+.bubble {
+  background-color: rgba(255,255,255,.58);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.75);
+  border-radius: 28px;
+  box-shadow: 0 10px 30px -14px rgba(30,58,138,.28), inset 0 1px 0 rgba(255,255,255,.85);
+  transition: transform .22s ease-out, box-shadow .25s ease;
+  will-change: transform;
+}
+.bubble:hover { box-shadow: 0 24px 46px -16px rgba(30,58,138,.36), inset 0 1px 0 rgba(255,255,255,.9); }
+.bubble-lift:hover { transform: translateY(-4px); }
+.bubble-sm { transition: transform .2s ease-out, box-shadow .2s ease; }
+.bubble-sm:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 26px -12px rgba(30,58,138,.35); }
+.font-display { font-family: 'Archivo Black', 'Arial Black', Impact, sans-serif; letter-spacing: -0.02em; }
+@media (prefers-reduced-motion: reduce) {
+  .bubble, .bubble-sm { transform: none !important; transition: none; }
+}
